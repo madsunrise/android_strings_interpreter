@@ -3,7 +3,7 @@ package main.kotlin.to_human
 import java.io.File
 import java.util.regex.Pattern
 
-class Main {
+class ToHumanReadableConverter {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
