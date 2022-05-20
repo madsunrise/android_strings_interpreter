@@ -1,7 +1,7 @@
 package main.kotlin.to_android
 
+import main.kotlin.Regex
 import java.io.File
-import java.util.regex.Pattern
 
 class ToAndroidStringsConverter {
     companion object {
@@ -20,7 +20,7 @@ class ToAndroidStringsConverter {
         }
 
         private fun convert(humanText: File, outputFile: File, sampleXml: String) {
-            val lineBeginnings = BEGIN_REGEX.toRegex().findAll(sampleXml).map { it.value }.toList()
+            val lineBeginnings = Regex.BEGIN_REGEX.toRegex().findAll(sampleXml).map { it.value }.toList()
             val writer = outputFile.bufferedWriter().apply {
                 write("<resources>")
                 newLine()
@@ -33,11 +33,11 @@ class ToAndroidStringsConverter {
                     throw IllegalStateException("Could not find index for $part")
                 }
                 val textStartsIndex = lineBeginIndex + part.length
-                val lineEndIndex = sampleXml.indexOf(LINE_END, startIndex = textStartsIndex)
+                val lineEndIndex = sampleXml.indexOf(Regex.LINE_END, startIndex = textStartsIndex)
                 if (lineEndIndex < 0) {
-                    throw IllegalStateException("Could not find index for $LINE_END, beginning: $part")
+                    throw IllegalStateException("Could not find index for ${Regex.LINE_END}, beginning: $part")
                 }
-                val wholeOldLine = sampleXml.substring(lineBeginIndex, lineEndIndex + LINE_END.length)
+                val wholeOldLine = sampleXml.substring(lineBeginIndex, lineEndIndex + Regex.LINE_END.length)
                 val oldHumanValue = sampleXml.substring(textStartsIndex, lineEndIndex)
                 val wholeNewLine = wholeOldLine.replace(">$oldHumanValue<", ">$newHumanValue<")
                 with(writer) {
@@ -49,9 +49,6 @@ class ToAndroidStringsConverter {
             writer.write("</resources>")
             writer.close()
         }
-
-        private val BEGIN_REGEX = Pattern.compile("<string name=\"[a-z|_]+\">")
-        private const val LINE_END = "</string>"
     }
 
     private class LineReader(file: File) {

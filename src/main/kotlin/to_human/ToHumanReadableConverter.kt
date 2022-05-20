@@ -1,7 +1,7 @@
 package main.kotlin.to_human
 
+import main.kotlin.Regex
 import java.io.File
-import java.util.regex.Pattern
 
 class ToHumanReadableConverter {
     companion object {
@@ -20,7 +20,7 @@ class ToHumanReadableConverter {
 
         private fun convert(sourceText: String, outputFile: File) {
             var currentLine = 1
-            val lineBeginnings = BEGIN_REGEX.toRegex().findAll(sourceText).map { it.value }
+            val lineBeginnings = Regex.BEGIN_REGEX.toRegex().findAll(sourceText).map { it.value }
             val writer = outputFile.bufferedWriter()
             for (lineBeginning in lineBeginnings) {
                 val lineBeginIndex = sourceText.indexOf(lineBeginning)
@@ -28,9 +28,9 @@ class ToHumanReadableConverter {
                     throw IllegalStateException("Could not find index for $lineBeginning")
                 }
                 val textStartsIndex = lineBeginIndex + lineBeginning.length
-                val lineEndIndex = sourceText.indexOf(LINE_END, startIndex = textStartsIndex)
+                val lineEndIndex = sourceText.indexOf(Regex.LINE_END, startIndex = textStartsIndex)
                 if (lineEndIndex < 0) {
-                    throw IllegalStateException("Could not find index for $LINE_END, beginning: $lineBeginning")
+                    throw IllegalStateException("Could not find index for ${Regex.LINE_END}, beginning: $lineBeginning")
                 }
                 val humanText = sourceText
                     .substring(textStartsIndex, lineEndIndex)
@@ -45,8 +45,5 @@ class ToHumanReadableConverter {
             }
             writer.close()
         }
-
-        private val BEGIN_REGEX = Pattern.compile("<string name=\"[a-z|_]+\">")
-        private const val LINE_END = "</string>"
     }
 }
