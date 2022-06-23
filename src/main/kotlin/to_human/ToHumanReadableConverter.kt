@@ -4,6 +4,9 @@ import main.kotlin.Regex
 import java.io.File
 
 class ToHumanReadableConverter {
+
+    // TODO support lines like <string name="file_name_was_saved_to" formatted="false">Some text</string>
+
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
